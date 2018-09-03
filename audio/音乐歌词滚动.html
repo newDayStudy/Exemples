@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="gushiyuan">
+  <meta name="Keywords" content="关键词">
+  <meta name="Description" content="描述">
+  <title>歌词滚动</title>
+  <style>
+	*{
+		margin:0;
+		padding:0
+	}
+	#container{
+		overflow:hidden;
+		width:300px;
+		height:500px;
+		margin:50px auto;
+		border:5px solid green;
+	}
+	#container #box p{
+		line-height:25px;
+		text-align:center;
+	}
+	#text{
+		display:none;
+	}
+	.active{
+		color:red;
+		font-weight:bold;
+	}
+  </style>
+ </head>
+ <body>
+	<div id="container">
+		<div id="box">
+		</div>
+	</div>
+	
+	<textarea id="text">
+		[00:00.00]海阔天空
+		[00:18.84]今天我
+		[00:21.85]寒夜里看雪飘过
+		[00:25.47]怀著冷却了的心窝飘远方
+		[00:31.36]风雨里追赶
+		[00:34.69]雾里分不清影踪
+		[00:37.56]天空海阔你与我
+		[00:40.37]可会变(谁没在变)
+		[00:44.00]多少次 迎著冷眼与嘲笑
+		[00:51.10]从没有放弃过心中的理想
+		[00:56.19]一刹那恍惚 若有所失的感觉
+		[01:02.23]不知不觉已变淡 心里爱(谁明白我)
+		[01:09.24]原谅我这一生不羁放纵爱自由
+		[01:16.16]也会怕有一天会跌倒
+		[01:22.45]背弃了理想谁人都可以
+		[01:28.66]那会怕有一天只你共我
+		[01:43.17]今天我
+		[01:46.70]寒夜里看雪飘过
+		[01:49.65]怀著冷却了的心窝飘远方
+		[01:55.64]风雨里追赶
+		[01:58.74]雾里分不清影踪
+		[02:01.79]天空海阔你与我
+		[02:04.66]可会变(谁没在变)
+		[02:08.60]原谅我这一生不羁放纵爱自由
+		[02:14.69]也会怕有一天会跌倒
+		[02:21.85]背弃了理想谁人都可以
+		[02:28.03]那会怕有一天只你共我
+		[03:08.35]仍然自由自我 永远高唱我歌
+		[03:17.88]走遍千里
+		[03:20.60]原谅我这一生不羁放纵爱自由
+		[03:27.32]也会怕有一天会跌倒
+		[03:33.87]背弃了理想谁人都可以
+		[03:40.12]那会怕有一天只你共我
+		[03:46.13]背弃了理想谁人都可以
+		[03:52.18]那会怕有一天只你共我
+		[03:56.95] OH YEAH
+		[04:03.11]OH YEAH
+		[04:07.98]OH......
+		[04:15.67]OH......
+	</textarea>
+	<<audio src="BEYOND.mp3"></audio>
+	
+	<script>
+		var audio = document.querySelector('audio')
+		// audio.play()
+		var oText = document.getElementById('text').innerHTML
+		var oBox = document.getElementById('box')
+		var arr = oText.split('[')
+		var html = ''
+		for(var i =0; i<arr.length;i++){
+			 var arr1 = arr[i].split(']')
+			 if(arr1[1]){
+				var time = arr1[0]
+				var timer = time.split('.')[0]
+				var date = timer.split(':')
+				var ms = parseInt(date[0])*60 + parseInt(date[1])*1
+				html += '<p id="'+ms+'" index="'+i+'">'+arr1[1]+'</p>'
+			 }
+		}
+		oBox.innerHTML = html
+		var oP = document.querySelectorAll('p')
+		audio.addEventListener('timeupdate', function(){
+			var time = parseInt(this.currentTime)
+			var ele = document.getElementById(time)
+			if(ele){
+				for(var i =0;i< oP.length;i++){
+					oP[i].className = ''
+				}
+				ele.className = 'active';
+				var h = ele.offsetHeight * ( ele.getAttribute('index') -1 );
+				oBox.style.webkitTransition = '2s'
+				oBox.style.webkitTransform = 'translateY(-'+h+'px)';
+			}
+		})
+		audio.addEventListener('ended', function(){
+			oBox.style.webkitTransform = 'translateY(0px)'
+			for(var i =0;i< oP.length;i++){
+				oP[i].className = ''
+			}
+		})
+	</script>
+ </body>
+</html>

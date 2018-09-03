@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		canvas{
+			display: block;
+			background-color: #000;
+		}
+		.btn{
+			position: absolute;
+			bottom: 0;
+			padding: 5px 10px;
+			color: #fff;
+			border: 1px solid #fff;
+		}
+		.prev{
+			left: 100px;
+		}
+		.next{
+			right: 100px;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<audio src="music.mp3" id="audio" loop></audio>
+	<button class="next btn">下一曲</button>
+	<button class="prev btn">上一曲</button>
+	<script type="text/javascript">
+		// 获取本地媒体资源
+		var audio = document.getElementById('audio');
+		var cxt = canvas.getContext('2d');
+		// 创建音频的上下文
+		var oAct = new AudioContext();
+		// 控制流程
+		// 创建媒体源
+		var audioSrc = oAct.createMediaElementSource(audio);
+		// 加工媒体源(分析机，分析音频对象，进行音频加工处理)
+		var analyser = oAct.createAnalyser();
+		// 媒体源与分析机的链接
+		audioSrc.connect(analyser);
+		// 输出音频(音频输出的目的地) 分析机要与目的地链接
+		analyser.connect(oAct.destination);
+
+		
+		// 获取数据来源解析
+		// 得到音频数据样本：可视化使用的数据值的数量
+		var bufferLength = analyser.frequencyBinCount;
+		// 存储数据：Uint8Array  8位无符号字节数组 初始化默认是1024
+		var voiceHeight = new Uint8Array(bufferLength);
+
+		// 定义canvas 渐变属性
+		var cxt = canvas.getContext('2d')
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		var w = canvas.width 
+		var h = canvas.height
+		// 自定义：选中画布中间位置为起始点方便计算
+		var color = cxt.createLinearGradient(w/2, h/2, w/2, h/2 -100);
+		color.addColorStop(0, 'red');
+		color.addColorStop(.5, 'blue');
+		color.addColorStop(1, 'green');
+
+		// 绘制音频条数
+		var count = 80; 
+
+		// 分析当前的音频数据，做到实时数据更新 （定时器）
+		function draw(){
+			analyser.getByteFrequencyData(voiceHeight)
+			// 数据渲染
+			// 自定义获取数组中的数据 平均多少频步获取一次
+			var step = parseInt(voiceHeight.length / count); // 取整 
+			cxt.clearRect(0,0,w,h);
+			for (var i = 0; i < count; i++) {
+				// 得到数组的具体数据
+				var audioHeight = voiceHeight[step * i]; // 获取需要绘制的条状的值
+				cxt.fillStyle = color;
+				cxt.fillRect( w/2 + (i*15), h/2, 10, -audioHeight);
+				cxt.fillRect( w/2 - (i*15), h/2, 10, -audioHeight);
+			}
+		}
+		setInterval(draw,15)
+		audio.play()
+		
+		document.querySelector('.prev').onclick = function () {
+			audio.src = 'music.mp3'
+			audio.play()
+		}
+		document.querySelector('.next').onclick = function () {
+			audio.src = 'BEYOND.mp3'
+			audio.play()
+		}
+	</script>
+</body>
+</html>

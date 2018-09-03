@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" onselectstart="return false">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="gushiyuan">
+  <meta name="Keywords" content="关键词">
+  <meta name="Description" content="描述">
+  <title>3D场景搭建</title>
+  <style>
+	*{
+		margin:0;
+		padding:0;
+		list-style:none;
+	}
+	body{
+		overflow:hidden;
+		perspective:500px;
+		/* perspective-origin:bottom center; */
+	}
+	.wrap{
+		position:relative;
+		width:250px;
+		height:275px;
+		margin:200px auto;
+		/* border:4px solid blue; */
+		transform:rotateX(0deg);
+		transform-style:preserve-3d;
+		animation:move 10s  linear infinite;
+	}
+	@keyframes move{
+		to{transform:rotateY(360deg);}
+	}
+	.wrap ul li{
+		overflow:hidden;
+		position:absolute;
+		width:250px;
+		height:275px;
+		background-image:url(images/1.jpg);
+		background-size:auto 100%;
+		background-repeat:no-repeat;
+	}
+
+  </style>
+ </head>
+ <body>
+	<div class="wrap">
+		<ul>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			</li>
+			<li>
+				
+			<li>
+				
+			</li>
+		</ul>
+	</div>
+	<script>
+		var oLi = document.querySelectorAll('li')
+		for(var i=0,len = oLi.length; i < len; i++){
+			
+			oLi[i].style.transform = 'rotateY('+ 360 / len * i +'deg) translateZ(500px)'
+			oLi[i].style.backgroundPositionX = '-'+ 247 * i +'px'
+		}
+	</script>
+	<!--
+	
+		2d -- 3d
+			z轴添加  transform-style: preserve-3d
+
+			透视效果：perspective：400px;
+			透视方向：perspective-origin: （x,y）10% 10%;(left,center,right,length,%)
+
+		围成圆：
+			每一个元素的y轴的旋转角度是不同的，最终形成360度
+			平均角度：360/10
+			0 0度
+			1 36度
+			2 72度
+			...
+
+		然后改变z位移
+	-->
+ </body>
+</html>

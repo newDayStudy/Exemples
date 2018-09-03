@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style>
+	*{margin:0;padding:0}
+	#box{width:100px;height:100px;position:absolute;top:0;left:0;background-color:red}
+  </style>
+ </head>
+ <body>
+	<div id="box"></div>
+	<script>
+		var box = document.getElementById('box')
+		box.onmousedown = function(e){
+			 this.style.cursor = 'move'
+			 var x = e.pageX - this.offsetLeft
+			 var y = e.pageY - this.offsetTop
+			 this.onmousemove = function(e){
+				var x_ = e.pageX - x
+				var y_ = e.pageY - y
+				this.style.top  = y_ + 'px'
+				this.style.left = x_ + 'px'
+			 }
+			 this.onmouseup = function(e){
+				this.onmousemove = null
+			 }
+		}
+	</script>
+ </body>
+</html>
+	

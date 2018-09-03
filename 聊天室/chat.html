@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<input type="text" name="" id="txt">
+	<input type="button" name="" value="提交" id="btn">
+	<script src="https://cdn.bootcss.com/socket.io/2.0.3/socket.io.js"></script>
+	<script type="text/javascript">
+
+		var socket = io.connect('/') // 根目录
+		var btn = document.querySelector('#btn')
+		var txt = document.querySelector('#txt')
+		console.log(btn)
+		btn.onclick = function(){
+			var val = txt.value
+			// 通过实例发送val 消息
+			socket.send(val)
+			val.value = ''
+		}
+		socket.on('message',function(msg){
+			var p = document.createElement('p')
+			p.innerHTML = msg
+			document.body.appendChild(p)
+		})
+	</script>
+</body>
+</html>

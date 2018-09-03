@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		#box{
+			width: 450px;
+			height: 380px; 
+			margin: 100px auto;
+			border: 2px solid #0033ff;;
+			border-radius: 5px;
+		}
+		#top{
+			width: 100%;
+			height: 50px;
+			border-bottom: 2px solid #0033ff;
+			font-size: 15px;
+		}
+		select{
+			margin: 15px 10px;
+		}
+		#con{
+			width: 420px;
+			height: 300px;
+			margin: auto;
+		}
+		#con ul.week{
+			width: 420px;
+			height: 45px;
+		}
+		#con ul.week li{
+			float: left;
+			width: 60px;
+			height: 45px;
+			line-height: 45px;
+			text-align: center;
+		}
+		#con ul.week li.weekend{
+			color: red;
+		}
+		#con ul.day li{
+			float: left;
+			width: 60px;
+			height: 45px;
+			border-top: 1px solid #ddd;
+			text-align: center;
+			line-height: 45px;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<div id="top">
+			<select id="year">
+				<option value="">请选择年份</option>
+			</select>年
+			<select id="month">
+				<option value="">请选择月份</option>
+			</select>月
+			<button style="width:60px;margin-left:20px" onclick="search()">查询</button>
+		</div>
+		<div id="con">
+			<ul class="week">
+				<li>一</li>
+				<li>二</li>
+				<li>三</li>
+				<li>四</li>
+				<li>五</li>
+				<li class="weekend">六</li>
+				<li class="weekend">七</li>
+			</ul>
+			<ul class="day">
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var listYear = document.getElementById('year')
+		var listMonth = document.getElementById('month')
+		var dayList = document.getElementsByClassName('day')[0].getElementsByTagName('li')
+
+		window.onload = function(){
+			createEle(listYear,1990,2050)
+			createEle(listMonth,1,12)
+		}
+
+		function createEle(obj,start,end){
+			for (var i = start; i <= end; i++) {
+				var ele = document.createElement('option')
+				ele.innerHTML = i
+				ele.value = i
+				obj.appendChild(ele)
+			}
+		}
+
+		
+		function is_leap(years){
+			// 闰年  可以被4整除 可以被400整除
+			// if (years % 100 == 0) {
+			// 	if (years % 400 == 0 ?
+			// 		return 1
+			// 	} else {
+			// 		return 0
+			// 	}
+			// } else {
+			// 	if (years % 4 == 0) {
+			// 		return 1
+			// 	} else {
+			// 		return 0
+			// 	} 1:闰年 0：平年 
+			// }
+			return (years % 100 == 0 ? res = (years % 400 == 0 ? 1 : 0) : res= (years % 4 == 0 ? 1 : 0))
+		}
+
+		// 数组 Array对象 下标找月份
+		var m_day = new Array(31,28,31,30,31,30,31,31,30,31,30,31)
+
+		// console.log(listYear.value)
+		// console.log(listMonth.value)
+		// new Date(年，月，天)
+		function search(){
+			for (var i = 0; i < dayList.length; i++) {
+				dayList[i].innerHTML = ''
+			}
+			var year = listYear.value
+			var month = listMonth.value
+			var time = new Date(year,month-1,1)
+			is_leap(year) ? m_day[1] = 29 : m_day[1] = 28 
+			if (!year || !month) {
+				alert('请选择年份月份')
+			} else {
+				var firstDay = time.getDay() // 获取当天为星期几
+				for (var i = 0; i < m_day[month-1]; i++) {
+					if (firstDay === 0) {
+						dayList[i+firstDay+7].innerHTML = i+1
+					} else {
+						dayList[i+firstDay-1].innerHTML = i+1
+					}
+				}
+			}
+		}
+	</script>
+</body>
+</html>

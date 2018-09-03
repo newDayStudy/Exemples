@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	
+	<style type="text/css">
+
+		*{
+			margin: 0;
+			padding:0;
+			list-style-type: none;
+		}
+		body{
+			user-select: none;
+		}
+		#parent{
+			position: relative;
+			width: 630px;
+			height: 390px;
+			margin: 100px;
+			border: 1px solid red;
+			border-radius: 8px;
+		}
+		li{
+			float: left;
+			width: 200px;
+			height: 120px;
+			margin: 5px;
+			text-align: center;
+			line-height: 120px;
+			color: #fff;
+			font-size: 30px;
+			border-radius: 8px;
+		}
+		
+	</style>
+</head>
+<body>
+	<ul id="parent">
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+
+	<script type="text/javascript">
+		var color = ['blue', 'green', 'black', 'red', 'pink', 'yellow', 'purple', 'gray', 'orange'];
+		var oUl = document.getElementsByTagName('ul')[0];
+		var oLi = oUl.getElementsByTagName('li');
+		var len = oLi.length
+		var z = 0
+		var aLi = []; // 存放每个li的offsetTop, offsetLeft
+		for (var i = 0; i < len; i++) {
+			aLi.push([oLi[i].offsetLeft, oLi[i].offsetTop])
+		}
+		for (var i = 0; i < len; i++) {
+			oLi[i].style.position = 'absolute';
+			oLi[i].style.left = aLi[i][0] + 'px';
+			oLi[i].style.top = aLi[i][1] + 'px';
+			oLi[i].style.margin = 0;
+			oLi[i].style.backgroundColor = color[i]
+		}
+		for (let i = 0; i < len; i++) {
+			oLi[i].onmousedown = function(e){
+				var e = e || window.event
+				var x = e.clientX;
+				var y = e.clientY;
+				var l = oLi[i].offsetLeft;
+				var t = oLi[i].offsetTop;
+				z++;
+				oLi[i].style.zIndex = z;
+				document.onmousemove = function(e){
+					var e = e || window.event
+					var _left = e.clientX - x + l;
+					var _top = e.clientY - y + t;
+					oLi[i].style.left = _left + 'px';
+					oLi[i].style.top = _top + 'px';
+				}
+				document.onmouseup = function(){
+					document.onmousemove = null
+					document.onmouseup = null
+				}
+			}
+		}
+
+		
+	</script>
+</body>
+</html>

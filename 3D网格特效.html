@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" onselectstart="return false">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="gushiyuan">
+  <meta name="Keywords" content="关键词">
+  <meta name="Description" content="描述">
+  <title>3D网格特效</title>
+  <style>
+	*{
+		margin:0;
+		padding:0;
+		list-style:none;
+	}
+	html{
+		height:100%;
+	}
+	body{
+		overflow: hidden;
+		height:100%;
+		perspective:500px;
+		background:#023b3b;
+	}
+	.wrap{
+		position:absolute;
+		top:50%;
+		left:50%;
+		width:0px;
+		height:0px;
+		transform-style:preserve-3d;
+		transform:translateZ(-2000px) rotateX(0deg) rotateY(0deg);
+	}
+	.wrap ul li{
+		position:absolute;
+		top:-80px;
+		left:-60px;
+		width:120px;
+		height:160px;
+		background:rgba(0,127,127,.5);
+		border:1px solid rgba(127,255,255,.25);
+		box-shadow: 0 0 12px rgba(0,255,255,.5);
+		cursor:pointer;
+		transition:4s ease-in-out;
+
+	}
+	.wrap ul li:hover{
+		border:1px solid rgba(127,255,255,.75);
+		box-shadow: 0 0 12px rgba(0,255,255,.75);
+	}
+	.btn{
+		position: absolute;
+		bottom: 10px;
+	}
+	.btn li{
+		float: left;
+		padding: 5px 10px;
+		margin: 0 10px;
+		background-color: rgba(0,127,127,.5);
+		color: #fff;
+		border-radius: 3px;
+		cursor: pointer;
+	}
+  </style>
+ </head>
+ <body>
+	<div class="wrap">
+		<ul class="con"></ul>
+	</div>
+	<ul class="btn">
+		<li>Table</li>
+		<li>Sphere</li>
+		<li>Grid</li>
+		<li>Heix</li>
+	</ul>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery.mousewheel.js"></script>
+	<script>
+		var liNum = 5 * 5 * 5
+		var tX = 500 , tY = 500 , tZ = 800;  // 水平 垂直间隔
+		var firstX = - 2*tX; //第一个li水平偏移量
+		var firstY = - 2*tY; //第一个li垂直偏移量
+		var firstZ = - 2*tZ; //第一个li Z轴偏移量
+
+
+		for(var i = 0; i < liNum; i++){
+			var li = $('<li></li>')
+			/*立体摆放*/
+			var x = (Math.random()-0.5)*2000;
+			var y = (Math.random()-0.5)*2000;
+			var z = (Math.random()-0.5)*2000;
+			li.css({
+				transform: 'translate3d('+ x +'px,'+y+'px,'+z+'px)'
+			})
+			/*平面摆放
+			var iX = i % 5
+			var iY = parseInt(i / 5)
+			li.css({
+				transform: 'translate('+ (iX*tX + firstX) +'px,'+(iY*tY+firstY)+'px)'
+			})
+			*/
+			
+			$('.con').append(li)
+		}
+		
+		function Grid(){
+			var tX = 500 , tY = 500 , tZ = 800;  // 水平 垂直间隔
+			var firstX = - 2*tX; //第一个li水平偏移量
+			var firstY = - 2*tY; //第一个li垂直偏移量
+			var firstZ = - 2*tZ; //第一个li Z轴偏移量
+			var oLi = $('.wrap ul li');
+			for(var i =0,len = oLi.length; i < len; i++){
+				(function(li){
+					var iX = (i % 25) % 5; // x方向，要增加的倍数
+					var iY = parseInt((i % 25) / 5); //y方向，要增加的倍数
+					var iZ = parseInt(i / 25); //z方向，要增加的倍数
+					li.css({
+						transform: 'translate3d('+ (iX*tX + firstX) +'px,'+(iY*tY+firstY)+'px,'+(iZ*tY+firstZ)+'px)'
+					})
+				})($(oLi[i]))
+			}
+		}
+		
+		(function(){
+			var nowX, nowY, minusX, minusY, lastX, lastY;
+			var rotY = 0,rotX = 0, tZ = -2000;
+
+			var timer,timer1;
+			$(document).mousedown(function(ev){
+				ev = ev || window.event;
+				lastX = ev.clientX;
+				lastY = ev.clientY;
+				clearInterval(timer)
+				$(this).mousemove(function (ev) {
+					ev = ev || window.event;
+
+					nowX = ev.clientX;
+					nowY = ev.clientY;
+
+					minusX = nowX - lastX;
+					minusY = nowY - lastY;
+
+					rotY += minusX*0.2;
+					rotX -= minusY*0.2;
+					
+					
+					$('.wrap').css({
+						transform: 'translateZ('+tZ+'px) rotateX('+rotX+'deg) rotateY('+rotY+'deg)'
+					})
+
+					lastX = nowX;
+					lastY = nowY;
+				})
+			}).mouseup(function (ev) {
+				$(this).off('mousemove')
+
+				timer = setInterval(function(){
+					minusX *= 0.9;
+					minusY *= 0.9;
+					if ( Math.abs(minusX) < 0.5 && Math.abs(minusY) < 0.5) {
+						clearInterval(timer)
+					}
+					rotY += minusX*0.2;
+					rotX -= minusY*0.2;
+					
+					$('.wrap').css({
+						transform: 'translateZ('+tZ+'px) rotateX('+rotX+'deg) rotateY('+rotY+'deg)'
+					})
+				}, 13)	
+			}).mousewheel(function(){
+				clearInterval(timer1)
+				var d = arguments[1];
+				tZ += d * 50;
+				tZ = Math.min(0, tZ);
+				tZ = Math.max(-8000, tZ)
+				$('.wrap').css({
+					transform: 'translateZ('+tZ+'px) rotateX('+rotX+'deg) rotateY('+rotY+'deg)'
+				})
+				timer1 = setInterval(function(){
+					d *= 0.9;
+					if ( Math.abs(d) < 0.01 ) {
+						clearInterval(timer1)
+					}
+					tZ += d * 50;
+					tZ = Math.min(0, tZ);
+					tZ = Math.max(-8000, tZ)
+					$('.wrap').css({
+						transform: 'translateZ('+tZ+'px) rotateX('+rotX+'deg) rotateY('+rotY+'deg)'
+					})
+				}, 13)	
+			})
+		})()
+		/*
+		 	1:  -800px -800px
+		 	2:  -400px -800px
+		 	3:  0px -800px
+		 	4:  400px -800px
+		 	5:  800px -800px
+
+
+			超过25 往上拉一层
+
+		
+
+		*/
+		
+		function Heix () {
+			var roY = 10, tY  = 10;
+			var mIndex = Math.ceil($('.wrap li').length / 2)
+			var firstY = -10 * mIndex;
+			$('.wrap li').each(function(i){
+				$(this).css({
+					transform: 'rotateY('+ roY * i+'deg) translateY('+(firstY + tY*i)+'px) translateZ(1000px) '
+				})
+			})
+		}
+
+
+		$('.btn').on('click', function(e){
+			var text = e.target.innerText;
+			e.preventDefault();
+			switch (text) {
+				case 'Heix':
+					Heix()
+					break;
+				case 'Grid':
+					Grid()
+					break;
+				case 'Table':
+					Table()
+					break;
+				case 'Sphere':
+					Sphere()
+					break;
+			}
+
+		})
+	</script>
+ </body>
+</html>

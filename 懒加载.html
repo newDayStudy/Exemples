@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		img{
+			display: block;
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+<body>
+	<img data-src="img/test/1.jpg" src="img/test/1.jpg" alt="" width="500">
+	<img data-src="img/test/2.jpg" src="img/test/2.jpg" alt="" width="500">
+	<img data-src="img/test/3.jpg" src="img/test/3.jpg" alt="" width="500">
+	<img data-src="img/test/4.jpg" src="img/test/4.jpg" alt="" width="500">
+	<img data-src="img/test/5.jpg" src="img/test/5.jpg" alt="" width="500">
+	<img data-src="img/test/1.jpg" src="img/test/1.jpg" alt="" width="500">
+	<img data-src="img/test/2.jpg" src="img/test/2.jpg" alt="" width="500">
+	<img data-src="img/test/3.jpg" src="img/test/3.jpg" alt="" width="500">
+	<img data-src="img/test/4.jpg" src="img/test/4.jpg" alt="" width="500">
+	<img data-src="img/test/5.jpg" src="img/test/5.jpg" alt="" width="500">
+	<img data-src="img/test/1.jpg" src="img/test/1.jpg" alt="" width="500">
+	<img data-src="img/test/2.jpg" src="img/test/2.jpg" alt="" width="500">
+	<img data-src="img/test/3.jpg" src="img/test/3.jpg" alt="" width="500">
+	<img data-src="img/test/4.jpg" src="img/test/4.jpg" alt="" width="500">
+</body>
+</html>
+<script type="text/javascript">
+	var  oImg = document.getElementsByTagName('img')
+	var length = oImg.length
+
+	var arr = []
+
+
+	for (var i = 0; i < length; i++) {
+		oImg[i].dataSrc = oImg[i].src
+		oImg[i].src = 'img/test/timg.gif'
+	}
+
+	window.onload = function(){
+		window.onscroll = imgShow;
+		var arr = []
+		for (var i = 0; i < length; i++) {
+			arr[i] = oImg[i]
+		}
+		function imgShow(){
+			console.log(1)
+			for (var i = arr.length - 1; i >= 0; i--) {
+				var top = offsetTop(arr[i])
+				var scrollTop =  document.documentElement.scrollTop || document.body.scrollTop
+				if (top < window.innerHeight + scrollTop) {
+					arr[i].src = arr[i].dataSrc
+					arr.splice(i,1)
+				}
+			}
+		}
+
+		function offsetTop(obj){
+			var top = 0;
+			while (obj != document.body) {
+				top += obj.offsetTop;
+				obj = obj.parentNode;
+			}
+			return top
+		}
+	}
+
+
+</script>

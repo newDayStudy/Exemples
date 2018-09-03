@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="gushiyuan">
+  <meta name="Keywords" content="关键词">
+  <meta name="Description" content="描述">
+  <title>canvas</title>
+  <style>
+	*{
+		margin:0;
+		padding:0
+	}
+	canvas{
+		display:block;
+		background-color:#000;
+	}
+  </style>
+ </head>
+ <body>
+	<canvas id="canvas">您的浏览器不支持，请更换浏览器</canvas>
+	<script>
+		var ctx = canvas.getContext('2d')
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var i = 0;
+		
+		var circles = []; // 存放绘制的圆形
+		var rects = [];   // 存放正方形粒子
+		var triangles = []; // 存放三角形粒子
+		var x = 0;
+		var y = 0;
+		window.onresize = function(){
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			w = window.innerWidth;
+			h = window.innerHeight;
+			circles = [];
+			rects = [];
+			triangles = [];
+			addPartical();
+		}
+		
+		// 圆形粒子对象
+		function Circle(x,y,r){
+			this.x = x; // 圆心横坐标
+			this.y = y; // 圆心纵坐标
+			this.r = r; // 圆半径
+			this.speed = Math.random()*0.5+0.1; // 移动速度
+			this.direction = Math.random()*Math.PI*2; // 移动方向即角度
+		}
+		// 移动圆形粒子
+		Circle.prototype.update = function(){
+			this.x += Math.cos(this.direction) * this.speed; //圆心横坐标变化
+			this.y += Math.sin(this.direction) * this.speed; //圆心纵坐标变化
+			if (this.x <= this.r) // 横坐标边界
+			{
+				this.x = this.r;
+				this.direction = Math.PI - this.direction;
+			}else if (this.x >= w-this.r)
+			{
+				this.x = w-this.r;
+				this.direction = Math.PI - this.direction;
+			}
+			if (this.y <= this.r)// 纵坐标边界
+			{
+				this.y = this.r;
+				this.direction = this.direction - Math.PI;
+			}else if (this.y >= h-this.r)
+			{
+				this.y =  h-this.r;
+				this.direction = this.direction - Math.PI;
+			}
+		}
+		// 绘制出圆形粒子
+		Circle.prototype.draw = function(){
+			ctx.beginPath();
+			ctx.fillStyle = '#ff6';
+			if(this.x >= x - 50 && this.x <= x + 50 && this.y >= y - 50 && this.y <= y + 50){
+				ctx.globalAlpha = 1;
+			} else {
+				ctx.globalAlpha = 0.4;
+			}
+			ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
+			ctx.closePath();
+			ctx.fill()
+		}
+		
+		// 正方形粒子对象
+		function Rect(x, y, cw, ch){
+			this.x = x;  // 正方形起始横坐标
+			this.y = y;  // 正方形起始纵坐标
+			this.w = cw; // 正方形宽
+			this.h = ch; // 正方形高
+			// 正方形的中心坐标初始值
+			this.x0 = Math.random() * w;
+			this.y0 = Math.random() * h;
+			this.speed = Math.random()*0.5 + 0.1; // 移动速度
+			this.direction = Math.random()*Math.PI*2;// 移动方向即角度
+			// 正方形斜边的一半
+			this.r = Math.sqrt(Math.pow(this.w/2, 2) + Math.pow(this.h/2, 2));
+		}
+		// 移动正方形粒子
+		Rect.prototype.update = function(){
+			// 变化后的中心坐标
+			this.x0 += Math.cos(this.direction) * this.speed;
+			this.y0 += Math.sin(this.direction) * this.speed;
+			if (this.x0 <= this.r) // 横坐标边界
+			{
+				this.x0 = this.r;
+				this.direction = Math.PI - this.direction ;
+			}else if (this.x0 >= w-this.r)
+			{
+				this.x0 = w-this.r;
+				this.direction = Math.PI - this.direction ;
+			}
+			if (this.y0 <= this.r)// 纵坐标边界
+			{
+				this.y0 = this.r;
+				this.direction = this.direction - Math.PI;
+			}else if (this.y0 >= h-this.r)
+			{
+				this.y0 =  h-this.r;
+				this.direction = this.direction - Math.PI;
+			}
+		}
+		// 绘制正方形粒子
+		Rect.prototype.draw = function(){
+			ctx.save();
+			ctx.translate(this.x0, this.y0);
+			ctx.rotate(i*Math.PI/180);
+			ctx.fillStyle = '#60c';
+			if(this.x0 >= x - 50 && this.x0 <= x + 50 && this.y0 >= y - 50 && this.y0 <= y + 50){
+				ctx.globalAlpha = 1;
+			} else {
+				ctx.globalAlpha = 0.4;
+			}
+			ctx.beginPath();
+			ctx.fillRect(this.x, this.y, this.w, this.h);
+			ctx.closePath();
+			ctx.restore();
+		}
+		// 三角形粒子对象
+		function Triangle(x1, y1, x2, y2, x3, y3){
+			this.x1 = x1;
+			this.y1 = y1;
+			this.x2 = x2;
+			this.y2 = y2;
+			this.x3 = x3;
+			this.y3 = y3;
+			// 绘制三角形中心坐标
+			this.x0 = Math.random() * w;
+			this.y0 = Math.random() * h;
+			this.speed = Math.random()*0.5 + 0.1;
+			this.direction = Math.random()*Math.PI*2;
+			// 旋转的角度
+			this.angle = Math.random()*Math.PI;
+			// 三角形的半径
+			this.r = distance(this.x1, this.y1, this.x2, this.y2)/2/Math.cos(Math.PI/6);
+		}
+		// 移动三角形粒子
+		Triangle.prototype.update = function(){
+			this.x1 = this.x0 + Math.cos( this.angle ) * this.r;
+			this.y1 = this.y0 + Math.sin( this.angle ) * this.r;
+			this.x2 = this.x0 + Math.cos( this.angle + Math.PI*2/3 ) * this.r;
+			this.y2 = this.y0 + Math.sin( this.angle + Math.PI*2/3 ) * this.r;
+			this.x3 = this.x0 + Math.cos( this.angle + Math.PI*4/3 ) * this.r;
+			this.y3 = this.y0 + Math.sin( this.angle + Math.PI*4/3 ) * this.r;
+			this.angle += Math.PI/100;
+			this.x0 += Math.cos(this.direction) * this.speed;
+			this.y0 += Math.sin(this.direction) * this.speed;
+			if (this.x0 <= this.r) // 横坐标边界
+			{
+				this.x0 = this.r;
+				this.direction = Math.PI - this.direction ;
+			}else if (this.x0 >= w-this.r)
+			{
+				this.x0 = w-this.r;
+				this.direction = Math.PI - this.direction ;
+			}
+			if (this.y0 <= this.r)// 纵坐标边界
+			{
+				this.y0 = this.r;
+				this.direction = this.direction - Math.PI;
+			}else if (this.y0 >= h-this.r)
+			{
+				this.y0 =  h-this.r;
+				this.direction = this.direction - Math.PI;
+			}
+		}
+		// 绘制三角形粒子
+		Triangle.prototype.draw = function(){
+			ctx.save();
+			ctx.beginPath();
+			ctx.moveTo(this.x1, this.y1);
+			ctx.lineTo(this.x2, this.y2);
+			ctx.lineTo(this.x3, this.y3);
+			ctx.closePath();
+			ctx.fillStyle = '#39f';
+			if(this.x0 >= x - 50 && this.x0 <= x + 50 && this.y0 >= y - 50 && this.y0 <= y + 50){
+				ctx.globalAlpha = 1;
+			} else {
+				ctx.globalAlpha = 0.4;
+			}
+			ctx.fill();
+			ctx.restore();
+		}
+		// 勾股定理计算
+		function distance(sx,sy,tx,ty){
+			var x = tx - sx, y = ty - sy;
+			return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+		}
+		canvas.onmousemove = function(e){
+			e = e || window.event;
+			x = e.pageX;
+			y = e.pageY;
+		}
+		// 创建多个粒子
+		function addPartical(){
+			var count = 140;  // 绘制数量
+			while(count--){
+				var cw = Math.random() * w;
+				var cH = Math.random() * h;
+				circles.push(new Circle(cw, cH , 5));
+				rects.push(new Rect(5, -5, 10, 10));
+				triangles.push(new Triangle(cw, cH, cw+10, cH-5,cw+5, cH - 5*Math.tan(Math.PI/3)));
+			}
+		}
+		
+		addPartical()
+
+		// 动画
+		function loop(){
+			requestAnimationFrame(loop);
+			ctx.clearRect(0,0,w,h);
+			i++;
+			if (i>10000)
+			{
+				i = 0;
+			}
+			/*ctx.globalCompositeOperation = 'destination-out';
+			ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+			//透明度
+			ctx.globalAlpha = 1;
+			ctx.fillRect( 0, 0, w, h );
+			//显示重叠部分
+			ctx.globalCompositeOperation = 'lighter';*/
+			for(var item of circles){
+				item.draw();
+				item.update();
+			}
+			for(var item of rects){
+				item.draw();
+				item.update();
+			}
+			for(var item of triangles){
+				item.draw();
+				item.update();
+			}
+		}
+		window.onload = loop
+	</script>
+ </body>
+</html>

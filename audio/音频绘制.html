@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding:0;
+		}
+		canvas{
+			display: block;
+			background:#000;
+		}
+		#container{
+			position:absolute;
+			overflow:hidden;
+			width:220px;
+			height:500px;
+			border:5px solid green;
+		}
+		#container #box p{
+			line-height:25px;
+			text-align:center;
+			color:#fff;
+		}
+		#text{
+			display:none;
+		}
+		#container #box p.active{
+			color:red;
+			font-weight:bold;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div id="box">
+		</div>
+	</div>
+	<textarea id="text">
+		[00:00.00]海阔天空
+		[00:18.84]今天我
+		[00:21.85]寒夜里看雪飘过
+		[00:25.47]怀著冷却了的心窝飘远方
+		[00:31.36]风雨里追赶
+		[00:34.69]雾里分不清影踪
+		[00:37.56]天空海阔你与我
+		[00:40.37]可会变(谁没在变)
+		[00:44.00]多少次 迎著冷眼与嘲笑
+		[00:51.10]从没有放弃过心中的理想
+		[00:56.19]一刹那恍惚 若有所失的感觉
+		[01:02.23]不知不觉已变淡 心里爱(谁明白我)
+		[01:09.24]原谅我这一生不羁放纵爱自由
+		[01:16.16]也会怕有一天会跌倒
+		[01:22.45]背弃了理想谁人都可以
+		[01:28.66]那会怕有一天只你共我
+		[01:43.17]今天我
+		[01:46.70]寒夜里看雪飘过
+		[01:49.65]怀著冷却了的心窝飘远方
+		[01:55.64]风雨里追赶
+		[01:58.74]雾里分不清影踪
+		[02:01.79]天空海阔你与我
+		[02:04.66]可会变(谁没在变)
+		[02:08.60]原谅我这一生不羁放纵爱自由
+		[02:14.69]也会怕有一天会跌倒
+		[02:21.85]背弃了理想谁人都可以
+		[02:28.03]那会怕有一天只你共我
+		[03:08.35]仍然自由自我 永远高唱我歌
+		[03:17.88]走遍千里
+		[03:20.60]原谅我这一生不羁放纵爱自由
+		[03:27.32]也会怕有一天会跌倒
+		[03:33.87]背弃了理想谁人都可以
+		[03:40.12]那会怕有一天只你共我
+		[03:46.13]背弃了理想谁人都可以
+		[03:52.18]那会怕有一天只你共我
+		[03:56.95] OH YEAH
+		[04:03.11]OH YEAH
+		[04:07.98]OH......
+		[04:15.67]OH......
+	</textarea>
+	<canvas id="canvas"></canvas>
+	<audio src="BEYOND.mp3" id="audio"></audio>
+	<script type="text/javascript">
+		// 获取本地媒体源
+		var audio = document.querySelector('#audio');
+		// 创建音频上下文
+		var oAct = new AudioContext();
+		// 控制流程
+		// 创建媒体源
+		var audioSrc = oAct.createMediaElementSource(audio);
+		// 加工媒体源 （创建分析机）
+		var analyser = oAct.createAnalyser();
+		// 媒体源链接分析机
+		audioSrc.connect(analyser);
+		// 输出目的地
+		analyser.connect(oAct.destination);
+
+		var ctx = canvas.getContext('2d');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		var w = canvas.width;
+		var h = canvas.height;
+		window.onresize = function(){
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			w = canvas.width;
+			h = canvas.height;
+		}
+		var color = ctx.createLinearGradient(w/2, h/2 + 100 , w/2 , h/2 );
+		color.addColorStop(0,'green');
+		color.addColorStop(.5, 'orange');
+		color.addColorStop(1, 'red');
+		
+		// 绘制音频数量
+		var count = 80
+
+		// 获取数据源
+		var buffer = analyser.frequencyBinCount;
+		// 存储数据 Uint8Array  1024位
+		var data = new Uint8Array(buffer);
+		
+		setInterval(function(){
+			analyser.getByteFrequencyData(data)
+			var step = parseInt(data.length / count)
+			ctx.clearRect(0,0,w,h)
+			for (var i = 0; i < count; i++) {
+				var setH = data[step * i];
+				ctx.fillStyle = color;
+				ctx.fillRect(w/2 + (i*5),h/2 + 100,10,-setH);
+				ctx.fillRect(w/2 - (i*5),h/2 + 100 ,10,-setH);
+			}
+		},15)
+		audio.play()
+
+		audio.addEventListener('timeupdate', function(){
+			var curTime = this.currentTime
+			
+		})
+	</script>
+	<script>
+		var audio = document.querySelector('audio')
+		// audio.play()
+		var oText = document.getElementById('text').innerHTML
+		var oBox = document.getElementById('box')
+		var arr = oText.split('[')
+		var html = ''
+		for(var i =0; i<arr.length;i++){
+			 var arr1 = arr[i].split(']')
+			 if(arr1[1]){
+				var time = arr1[0]
+				var timer = time.split('.')[0]
+				var date = timer.split(':')
+				var ms = parseInt(date[0])*60 + parseInt(date[1])*1
+				html += '<p id="'+ms+'" index="'+i+'">'+arr1[1]+'</p>'
+			 }
+		}
+		oBox.innerHTML = html
+		var oP = document.querySelectorAll('p')
+		audio.addEventListener('timeupdate', function(){
+			var time = parseInt(this.currentTime)
+			var ele = document.getElementById(time)
+			if(ele){
+				for(var i =0;i< oP.length;i++){
+					oP[i].className = ''
+				}
+				ele.className = 'active';
+				var h = ele.offsetHeight * ( ele.getAttribute('index') -1 );
+				oBox.style.webkitTransition = '2s'
+				oBox.style.webkitTransform = 'translateY(-'+h+'px)';
+			}
+		})
+		audio.addEventListener('ended', function(){
+			oBox.style.webkitTransition = '0s'
+			oBox.style.webkitTransform = 'translateY(0px)'
+			for(var i =0;i< oP.length;i++){
+				oP[i].className = ''
+			}
+		})
+	</script>
+</body>
+</html>

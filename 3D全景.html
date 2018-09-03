@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>3D全景</title>
+	<style type="text/css">
+		*{
+			margin:0;
+			padding:0;
+			list-style: none;
+		}
+		body{
+			perspective: 1000px;
+			cursor: pointer;
+		}
+		#container{
+			width:  500px;
+			height: 300px;
+			margin: 200px auto;
+			border: 2px solid red;
+		}
+	</style>
+</head>
+<body>
+	<ul id="container">
+		
+	</ul>
+	<script src="js/three.min.js"></script>
+	<script src="js/photo-sphere-viewer.min.js"></script>
+	<script>
+		var psv = new PhotoSphereViewer({
+			panorama: './images/sun.jpg',
+			container: 'div'
+		})
+	</script>
+</body>
+</html>

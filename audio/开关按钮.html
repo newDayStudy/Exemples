@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="gushiyuan">
+  <meta name="Keywords" content="关键词">
+  <meta name="Description" content="描述">
+  <title>案例</title>
+  <style>
+	*{
+		margin:0;
+		padding:0
+	}
+	.box{
+		position:relative;
+		width:50px;
+		height:30px;
+		margin:100px;
+		border:1px solid #ccc;
+		border-radius:15px;
+		cursor:pointer;
+	}
+	.switch{
+		box-sizing:border-box;
+		position:absolute;
+		top:0;
+		left:0;
+		width:30px;
+		height:30px;
+		background:#fff;
+		border:1px solid #ccc;
+		border-radius:50%;
+		transition:.5s;
+	}
+	.plus{
+		box-sizing:border-box;
+		position:absolute;
+		top:0;
+		left:0;
+		height:30px;
+		background-color:blue;
+		border-radius:15px;
+	}
+	.text{
+		position:absolute;
+		top:0;
+		left:0;
+		width:45px;
+		height:30px;
+		line-height:30px;
+		
+	}
+	.right{
+		left:0;
+		text-align:right;
+	}
+	.left{
+		left:5px;
+		color:#fff;
+		text-align:left;
+	}
+  </style>
+ </head>
+ <body>
+	<div class="box">
+		<div class="plus"></div>
+		<div class="switch"></div>
+		<span class="text right">日</span>
+	</div>
+	<script>
+		var oBox = document.querySelector('.box');
+		var oSwitch = document.querySelector('.switch');
+		var oPlus = document.querySelector('.plus');
+		var oText = document.querySelector('.text');
+		var off = true
+		oBox.onclick = function(){
+			if(off){
+				oSwitch.style.left = '20px';
+				oPlus.style.width = '50px';
+				oText.innerHTML = '月';
+				oText.classList.remove('right');
+				oText.classList.add('left');
+				
+			} else {
+				oSwitch.style.left = '0';
+				oPlus.style.width = '0';
+				oText.innerHTML = '日';
+				oText.classList.remove('left');
+				oText.classList.add('right');
+			}
+			off = !off
+		}	
+	</script>
+ </body>
+</html>
