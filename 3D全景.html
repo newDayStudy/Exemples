@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>3D全景</title>
 	<style type="text/css">
 		*{
@@ -9,14 +10,17 @@
 			padding:0;
 			list-style: none;
 		}
+		html{
+			font-size: 10px;
+		}
 		body{
 			perspective: 1000px;
 			cursor: pointer;
 		}
 		#container{
-			width:  500px;
-			height: 300px;
-			margin: 200px auto;
+			width:  75rem;
+			height: 30rem;
+			margin: 20rem auto;
 			border: 2px solid red;
 		}
 	</style>
@@ -28,9 +32,11 @@
 	<script src="js/three.min.js"></script>
 	<script src="js/photo-sphere-viewer.min.js"></script>
 	<script>
+		var div = document.getElementById('container')
 		var psv = new PhotoSphereViewer({
 			panorama: './images/sun.jpg',
-			container: 'div'
+			container: div,
+			time_anim: false
 		})
 	</script>
 </body>
