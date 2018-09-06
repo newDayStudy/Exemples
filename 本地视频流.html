@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<style>
+	video{
+		display:block;
+		margin:100px auto;
+	}
+	</style>
+	</head>
+<body>
+
+	<video id="video" width="500" height="500">
+	</video>
+
+	<script>
+    /*	
+	1.navigator: 提供视频流注册的一些活动
+	2.mdeiaDevices: 提供访问链接媒体输入的设备（相机，麦克风，视频）
+	3.得到用户的设备，使用户同意使用设备
+		getUserMedia()
+			参数：constraints  success error
+	4.得到用户的视频流（媒体流）输出
+*/
+
+//console.log(navigator.mediaDevices.getUserMedia(constraints))
+// 调用设备成功以后
+var constraints = {video:true};
+navigator.mediaDevices.getUserMedia(constraints)
+.then(function(mediaStream){
+	// 获取video
+	var video = document.querySelector('video');
+
+	//输出到video
+	//video.src = window.URL.createObjectURL(mediaStream);
+	video.srcObject = mediaStream;
+	// 播放  视频流加载成功之后播放
+	video.onloadedmetadata = function(){
+		video.play()
+	}
+});
+  </script>
+
+</body>
+</html>
